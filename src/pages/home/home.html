@@ -1,14 +1,18 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      Jogador da vez: {{ jogadorDaVez == valorJogador ? 'você' : jogadorDaVez == valorComputador ? 'computador' : 'iniciando...'}}
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content>
+  <ion-grid>
+    <ion-row *ngFor="let linha of tabuleiro; let i = index;">
+      <ion-col *ngFor="let celula of linha; let j = index;" (click)="click(i, j)" text-center>
+        <ion-icon *ngIf="celula == 1" name="close"></ion-icon>
+        <ion-icon *ngIf="celula == -1" name="radio-button-off"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
