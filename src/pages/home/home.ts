@@ -52,6 +52,30 @@ export class HomePage {
     confirm.present();
   }
 
+  finalizar(){
+    let vencedor = this.jogoFinalizado();
+    let msg;
+    if(vencedor === this.valorComputador)
+      msg = 'O computador venceu!';
+    if(vencedor === this.valorJogador)
+      msg = 'Você venceu! Parabéns!';
+    if(vencedor === true)
+      msg = 'Empate!';
+
+    let alert = this.alertCtrl.create({
+      title: 'Jogo finalizado!',
+      subTitle: msg,
+      buttons: [{
+        text: 'OK',
+        handler: () => {
+          // Atualiza a página
+          window.document.location = '.';
+        }
+      }]
+    });
+    alert.present();
+  }
+
   click(i, j) {
     if(this.jogadorDaVez != this.valorJogador) return;
     if(this.tabuleiro[i][j] != 0) return;
@@ -64,8 +88,7 @@ export class HomePage {
 
     // Verifica se o jogo acabou
     if(this.jogoFinalizado()) {
-      console.log("Jogo finalizado!!!");
-      return;
+      return this.finalizar();
     }
 
     let executarMinMax = true;
@@ -93,8 +116,7 @@ export class HomePage {
     }
 
     if(this.jogoFinalizado()) {
-      console.log("Jogo finalizado!!!");
-      return;
+      return this.finalizar();
     }
 
     this.jogadorDaVez = this.valorJogador;
@@ -181,6 +203,7 @@ export class HomePage {
     let somaColunas = new Array(this.tabuleiro[0].length+1).join('0').split('').map(parseFloat);
     let somaDiagonalPrincipal = 0;
     let somaDiagonalSecundaria = 0;
+    let qtdVazia = 0;
 
     // Calcular
     for(let i=0; i < this.tabuleiro.length; i++){
@@ -189,6 +212,8 @@ export class HomePage {
         somaColunas[j] += this.tabuleiro[i][j];
         if(i == j) somaDiagonalPrincipal += this.tabuleiro[i][j];
         if(i+j == 2) somaDiagonalSecundaria += this.tabuleiro[i][j];
+        if(this.tabuleiro[i][j] == 0)
+          qtdVazia++;
       }
     }
 
@@ -199,6 +224,10 @@ export class HomePage {
     if(somaColunas.indexOf(this.valorComputador * 3) > -1 || somaLinhas.indexOf(this.valorComputador * 3) > -1 ||
       somaDiagonalSecundaria == this.valorComputador * 3 || somaDiagonalPrincipal == this.valorComputador * 3)
       return this.valorComputador;
+
+    // Se não há mais espaços vazios, retorna empate
+    if(qtdVazia === 0)
+      return true;
 
     return false;
   }
